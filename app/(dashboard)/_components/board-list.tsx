@@ -3,6 +3,7 @@
 import React from 'react'
 import EmptySearch from './empty-search';
 import EmptyFavourite from './empty-favourite';
+import EmptyBoards from './empty-boards';
 
 interface BoardListProps {
     orgId: string;
@@ -26,11 +27,7 @@ const BoardList = ({
         return <EmptyFavourite />
     }
     if (!data?.length) {
-        return (
-            <div>
-                You don&apos;t have any boards
-            </div>
-        )
+        return <EmptyBoards />
     }
 
     return (

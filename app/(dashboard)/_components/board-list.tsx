@@ -23,7 +23,10 @@ const BoardList = ({
     query,
 }: BoardListProps) => {
 
-    const data = useQuery(api.boards.get, { orgId }) // fetch data from server
+    const data = useQuery(api.boards.get, {
+        orgId,
+        ...query,
+    }) // fetch data from server
 
     if (data === undefined) {
         return (

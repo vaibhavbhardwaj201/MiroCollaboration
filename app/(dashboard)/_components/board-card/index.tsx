@@ -1,15 +1,20 @@
 "use client"
 
+import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
-
-import { Skeleton } from "@/components/ui/skeleton";
-import Overlay from "./overlay";
 import { useAuth } from "@clerk/nextjs";
-import Footer from "./footer";
+
+
+import { api } from "@/convex/_generated/api";
+import { Skeleton } from "@/components/ui/skeleton";
 import Actions from "@/components/actions";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+
+import Overlay from "./overlay";
+import Footer from "./footer";
 
 
 interface BoardCardProps {
@@ -33,6 +38,27 @@ const BoardCard = ({
     orgId,
     isFavourite,
 }: BoardCardProps) => {
+
+    const {
+        mutate: onFavourite,
+        pending: pendingFavourite
+    } = useApiMutation(api.board.favourite)
+    const {
+        mutate: onUnfavourite,
+        pending: pendingUnfavourite
+    } = useApiMutation(api.board.unfavourite)
+
+    const toggleFavourite = () => {
+        if (isFavourite) {
+            onUnfavourite({ id })
+                .catch(() => toast.error('Failed to unfavourite board'))
+        }
+        else {
+            onFavourite({ id, orgId })
+                .catch(() => toast.error('Failed to favourite board'))
+        }
+    }
+
     const { userId } = useAuth()
 
     const authorLabel = userId === authorId ? "You" : authorName
@@ -68,8 +94,8 @@ const BoardCard = ({
                     title={title}
                     authorLabel={authorLabel}
                     createdAtLabel={createdAtLabel}
-                    onClick={() => { }}
-                    disabled={false}
+                    onClick={toggleFavourite}
+                    disabled={pendingFavourite || pendingUnfavourite}
                 />
             </div>
         </Link>

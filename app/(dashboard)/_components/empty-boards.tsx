@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useOrganization } from '@clerk/nextjs'
 import { toast } from 'sonner'
@@ -10,6 +11,7 @@ import { useApiMutation } from '@/hooks/use-api-mutation'
 
 
 const EmptyBoards = () => {
+    const router = useRouter()
     const { organization } = useOrganization()
     const { mutate, pending } = useApiMutation(api.board.create)
 
@@ -23,7 +25,7 @@ const EmptyBoards = () => {
         })
             .then((id) => {
                 toast.success("Board created successfully")
-                // Redirect to board/{id}
+                router.push(`/board/${id}`)
             })
             .catch((err) => {
                 toast.error("Failed to create board")
